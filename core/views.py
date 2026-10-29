@@ -11,7 +11,7 @@ def register_view(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # ऑटोमैटिक 10-अंकों का बैंक अकाउंट नंबर जेनरेट करना
+            
             acc_num = str(random.randint(1000000000, 9999999999))
             Account.objects.create(user=user, account_number=acc_num, balance=1000.00)
             messages.success(request, 'Account created successfully! Please log in.')
@@ -41,14 +41,14 @@ def dashboard_view(request):
     transactions = account.transactions.order_by('-timestamp')[:5]
     return render(request, 'dashboard.html', {'account': account, 'transactions': transactions})
 
-from decimal import Decimal # <-- यह ऊपर इम्पोर्ट करना ज़रूरी है
+from decimal import Decimal 
 
 @login_required
 def deposit_view(request):
     if request.method == 'POST':
         amount_str = request.POST.get('amount')
         if amount_str:
-            amount = Decimal(amount_str) # Decimal में कन्वर्ट करें
+            amount = Decimal(amount_str) 
             if amount > 0:
                 account = request.user.account
                 account.balance += amount
@@ -63,7 +63,7 @@ def withdraw_view(request):
     if request.method == 'POST':
         amount_str = request.POST.get('amount')
         if amount_str:
-            amount = Decimal(amount_str) # Decimal में कन्वर्ट करें
+            amount = Decimal(amount_str) 
             account = request.user.account
             if 0 < amount <= account.balance:
                 account.balance -= amount
